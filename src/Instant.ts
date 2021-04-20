@@ -1,10 +1,8 @@
 import { ModelEvent, DateDate, InstantEvent, TakeRoleEvent, LeaveRoleEvent, UpdateRoleEvent } from "./ModelEvent";
 import { deepClone, Cloneable } from "./utils";
 
-/*
-    An instant represents a single point in time.
-    Instants must not be mutated outside of the Timeline class.
-*/
+
+// TODO: Test and document this properly
 
 /**
  * A single point in time.
@@ -22,7 +20,7 @@ export interface Instant<Description extends Cloneable, User extends Cloneable, 
     roles: { [role: string]: number }; /* defined roles in the board */
     rolesChanged: Array<string>; /* roles that have been changed in this instant */
 
-    members: Record<string, string[]>; /* assignment of roles -> persons */
+    members: { [key: string] : string[] } /* assignment of roles -> persons */
 }
 
 /** Create a new instant based on an optional previous instant */

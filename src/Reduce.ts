@@ -24,7 +24,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
     "user": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: SetUserEvent<User>) => {
         const { user, data } = event;
 
-        if (instant.usersChanged.indexOf(user) > 0) {
+        if (instant.usersChanged.indexOf(user) >= 0) {
             throw new ReduceError(instant, event, "User " + JSON.stringify(user) + " has already been modified in the same instant. ");
         }
 
@@ -48,12 +48,13 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
         }
         
         delete instant.users[user];
+        instant.usersChanged.push(user);
     },
 
     "role": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: UpdateRoleEvent) => {
         const { role, max = 1 } = event;
 
-        if (instant.rolesChanged.indexOf(role) > 0) {
+        if (instant.rolesChanged.indexOf(role) >= 0) {
             throw new ReduceError(instant, event, "Role " + JSON.stringify(role) + " has already been modified in the same instant. ");
         }
 
@@ -61,7 +62,10 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
 
         // delete the role!
         if (max <= 0) {
-            if (role in instant.members) {
+            if (! (role in instant.roles)) {
+                throw new ReduceError(instant, event, "Role " + JSON.stringify(role) + " can not be removed because it does not exist. ");
+            }
+            if (role in instant.roles) {
                 throw new ReduceError(instant, event, "Role " + JSON.stringify(role) + " can not be removed because there are members in the role. ");
             }
             
@@ -142,7 +146,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
     },
 };
 
-class ReduceError<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> extends Error {
+export class ReduceError<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> extends Error {
     constructor(instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason>, message: string) {
         super("Invalid event " + JSON.stringify(event.kind) + " at time " + JSON.stringify(instant.date) + ": " + message);
     }

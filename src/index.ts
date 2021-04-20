@@ -3,6 +3,8 @@ import { Instant, NewInstant } from "./Instant";
 import { Reduce } from "./Reduce";
 import { Cloneable } from "./utils";
 
+// TODO: Test and document this properly
+
 /** Continuum represens a mutable continuum of events */
 export class Continuum<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> {
     private events = new Array<ModelEvent<Description, User, FormalReason>>();
