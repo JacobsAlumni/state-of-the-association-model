@@ -1,26 +1,27 @@
 import { Instant } from "./Instant";
 import { InstantEvent, LeaveRoleEvent, ModelEvent, TakeRoleEvent, UpdateRoleEvent, SetUserEvent, DeleteUserEvent } from "./ModelEvent";
+import { Cloneable } from "./utils";
 
 /*
  *    Reduce reduces an instant with an event. 
  *    Reduce expects to be called in event order.
  */
-export function Reduce<Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason>) {
+export function Reduce<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason>) {
     instant.events.push(event);
     eventReducers[event.kind](instant, event as unknown as any);
 }
 
-type EventReducer<Description, User, FormalReason, Kind extends ModelEvent<Description, User, FormalReason>['kind']> = (instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason> & { kind: Kind }) => void;
+type EventReducer<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable, Kind extends ModelEvent<Description, User, FormalReason>['kind']> = (instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason> & { kind: Kind }) => void;
 
-const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventReducer<unknown, unknown, unknown, Kind>} = {
-    "instant": <Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: InstantEvent<Description>) => {
+const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventReducer<any, any, any, Kind>} = {
+    "instant": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: InstantEvent<Description>) => {
         if (typeof instant.description === "string") {
             throw new ReduceError(instant, event, "Instant already has a description.");
         }
         instant.description = event.description;
     },
 
-    "user": <Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: SetUserEvent<User>) => {
+    "user": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: SetUserEvent<User>) => {
         const { user, data } = event;
 
         if (instant.usersChanged.indexOf(user) > 0) {
@@ -31,7 +32,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
         instant.users[user] = data;
     },
 
-    "deleteUser": <Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: DeleteUserEvent) => {
+    "deleteUser": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: DeleteUserEvent) => {
         const { user } = event;
 
         // check that the user is defined
@@ -49,7 +50,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
         delete instant.users[user];
     },
 
-    "role": <Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: UpdateRoleEvent) => {
+    "role": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: UpdateRoleEvent) => {
         const { role, max = 1 } = event;
 
         if (instant.rolesChanged.indexOf(role) > 0) {
@@ -82,7 +83,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
     },
 
 
-    "enter": <Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: TakeRoleEvent<FormalReason>) => {
+    "enter": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: TakeRoleEvent<FormalReason>) => {
         const { role, user } = event;
         
         // check that the role is defined
@@ -114,7 +115,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
         instant.members[role] = current;
     },
     
-    "leave": <Description, User, FormalReason>(instant: Instant<Description, User, FormalReason>, event: LeaveRoleEvent<FormalReason>) => {
+    "leave": <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: LeaveRoleEvent<FormalReason>) => {
         const { role, user } = event;
 
         // check that the role is defined
@@ -141,7 +142,7 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
     },
 };
 
-class ReduceError<Description, User, FormalReason> extends Error {
+class ReduceError<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> extends Error {
     constructor(instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason>, message: string) {
         super("Invalid event " + JSON.stringify(event.kind) + " at time " + JSON.stringify(instant.date) + ": " + message);
     }

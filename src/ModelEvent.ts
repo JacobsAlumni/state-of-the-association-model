@@ -1,7 +1,7 @@
-/**
- * A ModelEvent is any event supported by this model.
- */
-export type ModelEvent<Description, User, FormalReason> =
+import { Cloneable, compareStrings } from "./utils";
+
+/** An event of the model implemented by this package */
+export type ModelEvent<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> =
     TakeRoleEvent<FormalReason> |
     LeaveRoleEvent<FormalReason> | 
     
@@ -12,63 +12,63 @@ export type ModelEvent<Description, User, FormalReason> =
     SetUserEvent<User> | 
     DeleteUserEvent;
 
-/* A description of the current event, e.g. "General Assembly 2020" */
-export interface InstantEvent<Description> extends ModelEventPrototype<"instant"> {
+/* Provides a (formal) description to the current instant */
+export interface InstantEvent<Description extends Cloneable> extends ModelEventPrototype<"instant"> {
     description: Description;
 }
 
-/* creating or updating user data */
+/* creates or updates user data */
 export interface SetUserEvent<User> extends ModelEventPrototype<"user"> {
     user: string;
     data: User;
 }
 
-/* delete a user */
+/* deletes a user */
 export interface DeleteUserEvent extends ModelEventPrototype<"deleteUser"> {
     user: string;
 }
 
-/* Creating or updating a role */
+/* Creates or updates a role */ // TODO: Give this a reason also
 export interface UpdateRoleEvent extends ModelEventPrototype<"role"> {
     role: string;
     max?: number; /* maximum number of occupants of this role, default 1, to delete set <= 0 */
 }
 
-/* An election of a specific person */
-export interface TakeRoleEvent<FormalReason> extends ModelEventPrototype<"enter"> {
+/* A person was elected to a specific role */
+export interface TakeRoleEvent<FormalReason extends Cloneable> extends ModelEventPrototype<"enter"> {
     role: string;
     user: string;
     reason: Reason<FormalReason>;
 }
 
-/* A removal of a specific person */
-export interface LeaveRoleEvent<FormalReason> extends ModelEventPrototype<"leave"> {
+/* A person was removed from a specific role */
+export interface LeaveRoleEvent<FormalReason extends Cloneable> extends ModelEventPrototype<"leave"> {
     role: string;
     user: string;
     reason: Reason<FormalReason>;
 }
 
-/** EventPrimitive represents a primitive event */
-interface ModelEventPrototype<K extends string> {
+/* Represents a primitive enved */
+interface ModelEventPrototype<Kind extends Readonly<string>> {
+    kind: Kind;
     date: DateDate;
-    kind: K;
 }
 
 /** Reason is a legal reason for entering or leaving a position */
-type Reason<FormalReason> = LegalReason<FormalReason> | ElectionReason<FormalReason> | AppointmentReason<FormalReason>;
+type Reason<FormalReason extends Cloneable> = LegalReason<FormalReason> | ElectionReason<FormalReason> | AppointmentReason<FormalReason>;
 
 /* Required for legal reasons, e.g. person left association */
-interface LegalReason<FormalReason> extends ReasonPrototype<"legal", FormalReason> {
+interface LegalReason<FormalReason extends Cloneable> extends ReasonPrototype<"legal", FormalReason> {
 }
 
 /* Person was elected by board members */
-interface ElectionReason<FormalReason> extends ReasonPrototype<"election", FormalReason> {
+interface ElectionReason<FormalReason extends Cloneable> extends ReasonPrototype<"election", FormalReason> {
     votes: Record<string, number>;
     abstensions: number;
 }
 
 /* Person was appointed */
-interface AppointmentReason<FormalReason> extends ReasonPrototype<"appointment", FormalReason> {
+interface AppointmentReason<FormalReason extends Cloneable> extends ReasonPrototype<"appointment", FormalReason> {
     votes: {
         yes: number;
         no: number;
@@ -103,7 +103,7 @@ export type DateDate = string | "";
  * Returns a positive number when a occured first, a negative number when b occured first, or 0 when they occured at the same time.
  * Within a specific time, events are ordered by kind.
  */
-export function compareEvent<Description, User, FormalReason>(a: ModelEvent<Description, User, FormalReason>, b: ModelEvent<Description, User, FormalReason>) {
+export function compareEvent<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(a: ModelEvent<Description, User, FormalReason>, b: ModelEvent<Description, User, FormalReason>) {
     const dates = compareDateDate(a.date, b.date);
     if (dates != 0) return dates;
 
@@ -116,12 +116,5 @@ export function compareEvent<Description, User, FormalReason>(a: ModelEvent<Desc
  * Returns a positive number when a occured first, a negative number when b occured first, or 0 when they occured at the same time.
  */
 export function compareDateDate(a: DateDate, b: DateDate) {
-    switch(true) {
-    case a < b:
-        return -1;
-    case a > b:
-        return 1;
-    default:
-        return 0;    
-    }
+    return compareStrings(a, b);
 }

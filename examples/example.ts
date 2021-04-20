@@ -1,4 +1,4 @@
-import { Continuum } from "..";
+import { Continuum } from "../src/";
 import { ModelEvent } from "../src/ModelEvent";
 
 const cont = new Continuum();

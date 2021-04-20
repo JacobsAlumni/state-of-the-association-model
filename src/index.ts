@@ -1,9 +1,10 @@
 import { compareEvent, ModelEvent, DateDate, compareDateDate } from "./ModelEvent";
 import { Instant, NewInstant } from "./Instant";
 import { Reduce } from "./Reduce";
+import { Cloneable } from "./utils";
 
 /** Continuum represens a mutable continuum of events */
-export class Continuum<Description, User, FormalReason> {
+export class Continuum<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> {
     private events = new Array<ModelEvent<Description, User, FormalReason>>();
 
     /*
@@ -28,7 +29,7 @@ export class Continuum<Description, User, FormalReason> {
 /**
  * TimelineCompiler creates a Timeline from a list of events
  */
-class TimelineCompiler<Description, User, FormalReason> {
+class TimelineCompiler<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> {
     compile(events: Array<ModelEvent<Description, User, FormalReason>>): Timeline<Description, User, FormalReason> {      
         this.instants = new Array<Instant<Description, User, FormalReason>>();
         this.currentInstant = NewInstant<Description, User, FormalReason>("");
@@ -77,7 +78,7 @@ class TimelineCompiler<Description, User, FormalReason> {
 /**
  * Timeline represents a static timeline of events.
  */
-export class Timeline<Description, User, FormalReason> {
+export class Timeline<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> {
 
     constructor(instants: Array<Instant<Description, User, FormalReason>>) {
         const map = new Map<DateDate, Instant<Description, User, FormalReason>>();
