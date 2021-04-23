@@ -1,8 +1,6 @@
 import { ModelEvent, DateDate } from './ModelEvent'
 import { deepClone, Cloneable } from './utils'
 
-// TODO: Test and document this properly
-
 /**
  * A single point in time.
  * Instants should not be modified by either
@@ -22,7 +20,12 @@ export interface Instant<Description extends Cloneable, User extends Cloneable, 
   members: { [key: string]: string[] } /* assignment of roles -> persons */
 }
 
-/** Create a new instant based on an optional previous instant */
+/**
+ * Creates a new Instant.
+ * @param date Date the new instant should take place at
+ * @param initial Optional instant representing a previous time
+ * @returns a new instant, that potentially inherits from the old one
+ */
 export function NewInstant<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> (date: DateDate, initial?: Instant<Description, User, FormalReason>): Instant<Description, User, FormalReason> {
   const { roles, members, users } = initial ?? { roles: {}, members: {}, users: {} }
 
