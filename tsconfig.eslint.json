@@ -1,0 +1,6 @@
+{
+    "extends": "./tsconfig.compiler",
+    "ts-standard": {
+        "exclude": ["node_modules", "dist"],
+    }
+}

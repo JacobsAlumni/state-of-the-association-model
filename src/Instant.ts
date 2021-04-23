@@ -1,42 +1,41 @@
-import { ModelEvent, DateDate, InstantEvent, TakeRoleEvent, LeaveRoleEvent, UpdateRoleEvent } from "./ModelEvent";
-import { deepClone, Cloneable } from "./utils";
-
+import { ModelEvent, DateDate } from './ModelEvent'
+import { deepClone, Cloneable } from './utils'
 
 // TODO: Test and document this properly
 
 /**
  * A single point in time.
- * Instants should not be modified by either 
+ * Instants should not be modified by either
  */
 export interface Instant<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> {
-    date: DateDate; /* date of this instants */
-    description?: Description;  /* description of this instant */
-    
-    events: Array<ModelEvent<Description, User, FormalReason>>; /* events that make up this instant */
+  date: DateDate /* date of this instants */
+  description?: Description /* description of this instant */
 
-    users: { [user: string]: User }; /* user data */
-    usersChanged: Array<string>; /* changed users */
+  events: Array<ModelEvent<Description, User, FormalReason>> /* events that make up this instant */
 
-    roles: { [role: string]: number }; /* defined roles in the board */
-    rolesChanged: Array<string>; /* roles that have been changed in this instant */
+  users: { [user: string]: User } /* user data */
+  usersChanged: string[] /* changed users */
 
-    members: { [key: string] : string[] } /* assignment of roles -> persons */
+  roles: { [role: string]: number } /* defined roles in the board */
+  rolesChanged: string[] /* roles that have been changed in this instant */
+
+  members: { [key: string]: string[] } /* assignment of roles -> persons */
 }
 
 /** Create a new instant based on an optional previous instant */
-export function NewInstant<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(date: DateDate, initial?: Instant<Description, User, FormalReason>): Instant<Description, User, FormalReason> {
-    const { roles, members, users } = initial ?? { roles: {}, members: {}, users: {} };
+export function NewInstant<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> (date: DateDate, initial?: Instant<Description, User, FormalReason>): Instant<Description, User, FormalReason> {
+  const { roles, members, users } = initial ?? { roles: {}, members: {}, users: {} }
 
-    return {
-        date,
-        events: [],
+  return {
+    date,
+    events: [],
 
-        roles: deepClone(roles),
-        rolesChanged: [],
+    roles: deepClone(roles),
+    rolesChanged: [],
 
-        users: deepClone(users),
-        usersChanged: [],
+    users: deepClone(users),
+    usersChanged: [],
 
-        members: deepClone(members),
-    }
+    members: deepClone(members)
+  }
 }
