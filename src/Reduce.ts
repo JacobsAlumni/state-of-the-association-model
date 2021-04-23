@@ -2,9 +2,10 @@ import { Instant } from './Instant'
 import { InstantEvent, LeaveRoleEvent, ModelEvent, TakeRoleEvent, UpdateRoleEvent, SetUserEvent, DeleteUserEvent } from './ModelEvent'
 import { Cloneable } from './utils'
 
-/*
- *    Reduce reduces an instant with an event.
- *    Reduce expects to be called in event order.
+/**
+ * Reduces an event onto an existing instant.
+ * @param instant Instant to reduce
+ * @param event Event to apply to instant
  */
 export function Reduce<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> (instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason>): void {
   instant.events.push(event)
@@ -145,6 +146,9 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
   }
 }
 
+/**
+ * An Error that occured during the Reduce function
+ */
 export class ReduceError<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> extends Error {
   constructor (instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason>, message: string) {
     super('Invalid event ' + JSON.stringify(event.kind) + ' at time ' + JSON.stringify(instant.date) + ': ' + message)
