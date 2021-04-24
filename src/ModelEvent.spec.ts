@@ -1,4 +1,4 @@
-import { compareEvent, compareDateDate, ModelEvent } from './ModelEvent'
+import { compareEvent, compareDateDate, ModelEvent, EventKind } from './ModelEvent'
 import { Cloneable } from './utils'
 
 describe(compareDateDate, () => {
@@ -41,19 +41,19 @@ describe(compareDateDate, () => {
 describe(compareEvent, () => {
   // events in ascending order to be compared
   const modelEventTests: Array<ModelEvent<Cloneable, Cloneable, Cloneable>> = [
-    { kind: 'instant', date: '2000-10-10', description: 'description' },
-    { kind: 'leave', date: '2000-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } },
-    { kind: 'deleteUser', date: '2000-10-10', user: 'userid' },
-    { kind: 'role', date: '2000-10-10', role: 'roleid', max: 1 },
-    { kind: 'user', date: '2000-10-10', user: 'userid', data: 'data' },
-    { kind: 'enter', date: '2000-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } },
+    { kind: EventKind.Instant, date: '2000-10-10', description: 'description' },
+    { kind: EventKind.LeaveRole, date: '2000-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } },
+    { kind: EventKind.DeleteUser, date: '2000-10-10', user: 'userid' },
+    { kind: EventKind.Role, date: '2000-10-10', role: 'roleid', max: 1 },
+    { kind: EventKind.SetUser, date: '2000-10-10', user: 'userid', data: 'data' },
+    { kind: EventKind.EnterRole, date: '2000-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } },
 
-    { kind: 'instant', date: '2001-10-10', description: 'description' },
-    { kind: 'leave', date: '2001-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } },
-    { kind: 'deleteUser', date: '2001-10-10', user: 'userid' },
-    { kind: 'role', date: '2001-10-10', role: 'roleid', max: 1 },
-    { kind: 'user', date: '2001-10-10', user: 'userid', data: 'data' },
-    { kind: 'enter', date: '2001-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } }
+    { kind: EventKind.Instant, date: '2001-10-10', description: 'description' },
+    { kind: EventKind.LeaveRole, date: '2001-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } },
+    { kind: EventKind.DeleteUser, date: '2001-10-10', user: 'userid' },
+    { kind: EventKind.Role, date: '2001-10-10', role: 'roleid', max: 1 },
+    { kind: EventKind.SetUser, date: '2001-10-10', user: 'userid', data: 'data' },
+    { kind: EventKind.EnterRole, date: '2001-10-10', user: 'userid', role: 'roleid', reason: { kind: 'legal', description: 'description' } }
   ]
 
   it('returns equal dates as 0', () => {

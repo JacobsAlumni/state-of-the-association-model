@@ -1,5 +1,5 @@
 import { Instant } from './Instant'
-import { InstantEvent, LeaveRoleEvent, ModelEvent, TakeRoleEvent, UpdateRoleEvent, SetUserEvent, DeleteUserEvent } from './ModelEvent'
+import { InstantEvent, LeaveRoleEvent, ModelEvent, EnterRoleEvent, RoleEvent, SetUserEvent, DeleteUserEvent, EventKind } from './ModelEvent'
 import { Cloneable } from './utils'
 
 /**
@@ -14,46 +14,29 @@ export function Reduce<Description extends Cloneable, User extends Cloneable, Fo
 
 type EventReducer<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable, Kind extends ModelEvent<Description, User, FormalReason>['kind']> = (instant: Instant<Description, User, FormalReason>, event: ModelEvent<Description, User, FormalReason> & { kind: Kind }) => void
 
-const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventReducer<any, any, any, Kind>} = {
-  instant: <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: InstantEvent<Description>) => {
+const eventReducers: { [Kind in EventKind]: EventReducer<any, any, any, Kind>} = {
+  [EventKind.Instant]: <
+    Description extends Cloneable,
+    User extends Cloneable,
+    FormalReason extends Cloneable
+  >(
+    instant: Instant<Description, User, FormalReason>,
+    event: InstantEvent<Description>
+  ) => {
     if (typeof instant.description === 'string') {
       throw new ReduceError(instant, event, 'Instant already has a description.')
     }
     instant.description = event.description
   },
 
-  user: <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: SetUserEvent<User>) => {
-    const { user, data } = event
-
-    if (instant.usersChanged.includes(user)) {
-      throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' has already been modified in the same instant. ')
-    }
-
-    instant.usersChanged.push(user)
-    instant.users[user] = data
-  },
-
-  deleteUser: <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: DeleteUserEvent) => {
-    const { user } = event
-
-    // check that the user is defined
-    if (!(user in instant.users)) {
-      throw new ReduceError(instant, event, 'Unknown User ' + JSON.stringify(user) + '. ')
-    }
-
-    // check that the user is not in any role!
-    for (const value of Object.values(instant.members)) {
-      if (value.includes(user)) {
-        throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' cannot be deleted because they occupy a role! ')
-      }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete instant.users[user]
-    instant.usersChanged.push(user)
-  },
-
-  role: <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: UpdateRoleEvent) => {
+  [EventKind.Role]: <
+    Description extends Cloneable,
+    User extends Cloneable,
+    FormalReason extends Cloneable
+  >(
+    instant: Instant<Description, User, FormalReason>,
+    event: RoleEvent
+  ) => {
     const { role, max = 1 } = event
 
     if (instant.rolesChanged.includes(role)) {
@@ -88,7 +71,59 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
     }
   },
 
-  enter: <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: TakeRoleEvent<FormalReason>) => {
+  [EventKind.SetUser]: <
+    Description extends Cloneable,
+    User extends Cloneable,
+    FormalReason extends Cloneable
+  >(
+    instant: Instant<Description, User, FormalReason>,
+    event: SetUserEvent<User>
+  ) => {
+    const { user, data } = event
+
+    if (instant.usersChanged.includes(user)) {
+      throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' has already been modified in the same instant. ')
+    }
+
+    instant.usersChanged.push(user)
+    instant.users[user] = data
+  },
+
+  [EventKind.DeleteUser]: <
+    Description extends Cloneable,
+    User extends Cloneable,
+    FormalReason extends Cloneable
+  >(
+    instant: Instant<Description, User, FormalReason>,
+    event: DeleteUserEvent
+  ) => {
+    const { user } = event
+
+    // check that the user is defined
+    if (!(user in instant.users)) {
+      throw new ReduceError(instant, event, 'Unknown User ' + JSON.stringify(user) + '. ')
+    }
+
+    // check that the user is not in any role!
+    for (const value of Object.values(instant.members)) {
+      if (value.includes(user)) {
+        throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' cannot be deleted because they occupy a role! ')
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete instant.users[user]
+    instant.usersChanged.push(user)
+  },
+
+  [EventKind.EnterRole]: <
+    Description extends Cloneable,
+    User extends Cloneable,
+    FormalReason extends Cloneable
+  >(
+    instant: Instant<Description, User, FormalReason>,
+    event: EnterRoleEvent<FormalReason>
+  ) => {
     const { role, user } = event
 
     // check that the role is defined
@@ -119,7 +154,14 @@ const eventReducers: { [Kind in ModelEvent<never, never, never>['kind']]: EventR
     instant.members[role] = current
   },
 
-  leave: <Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable>(instant: Instant<Description, User, FormalReason>, event: LeaveRoleEvent<FormalReason>) => {
+  [EventKind.LeaveRole]: <
+    Description extends Cloneable,
+    User extends Cloneable,
+    FormalReason extends Cloneable
+  >(
+    instant: Instant<Description, User, FormalReason>,
+    event: LeaveRoleEvent<FormalReason>
+  ) => {
     const { role, user } = event
 
     // check that the role is defined

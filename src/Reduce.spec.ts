@@ -1,5 +1,5 @@
 import { Instant } from './Instant'
-import { ModelEvent } from './ModelEvent'
+import { EventKind, ModelEvent } from './ModelEvent'
 import { Reduce } from './Reduce'
 import { Cloneable, deepClone } from './utils'
 
@@ -23,11 +23,11 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'instant', description: 'description' },
+      event: { date: '', kind: EventKind.Instant, description: 'description' },
       result: {
         date: '',
         description: 'description',
-        events: [{ date: '', kind: 'instant', description: 'description' }],
+        events: [{ date: '', kind: EventKind.Instant, description: 'description' }],
         users: {},
         usersChanged: [],
         roles: {},
@@ -47,7 +47,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'instant', description: 'description' }
+      event: { date: '', kind: EventKind.Instant, description: 'description' }
     },
 
     /* SetUserEvent */
@@ -62,10 +62,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'user', user: 'example', data: 'data' },
+      event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' },
       result: {
         date: '',
-        events: [{ date: '', kind: 'user', user: 'example', data: 'data' }],
+        events: [{ date: '', kind: EventKind.SetUser, user: 'example', data: 'data' }],
         users: {
           example: 'data'
         },
@@ -86,7 +86,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'user', user: 'example', data: 'data' }
+      event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' }
     },
     {
       name: 'can update an existing user',
@@ -99,10 +99,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'user', user: 'example', data: 'data' },
+      event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' },
       result: {
         date: '',
-        events: [{ date: '', kind: 'user', user: 'example', data: 'data' }],
+        events: [{ date: '', kind: EventKind.SetUser, user: 'example', data: 'data' }],
         users: {
           example: 'data'
         },
@@ -123,7 +123,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'user', user: 'example', data: 'data' }
+      event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' }
     },
 
     /* DeleteUserEvent */
@@ -138,10 +138,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'deleteUser', user: 'example' },
+      event: { date: '', kind: EventKind.DeleteUser, user: 'example' },
       result: {
         date: '',
-        events: [{ date: '', kind: 'deleteUser', user: 'example' }],
+        events: [{ date: '', kind: EventKind.DeleteUser, user: 'example' }],
         users: {},
         usersChanged: ['example'],
         roles: {},
@@ -161,7 +161,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'deleteUser', user: 'example2' }
+      event: { date: '', kind: EventKind.DeleteUser, user: 'example2' }
     },
 
     {
@@ -177,7 +177,7 @@ describe(Reduce, () => {
           main: ['example']
         }
       },
-      event: { date: '', kind: 'deleteUser', user: 'example' }
+      event: { date: '', kind: EventKind.DeleteUser, user: 'example' }
     },
 
     /* UpdateRoleEvent */
@@ -193,10 +193,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'role', role: 'main' },
+      event: { date: '', kind: EventKind.Role, role: 'main' },
       result: {
         date: '',
-        events: [{ date: '', kind: 'role', role: 'main' }],
+        events: [{ date: '', kind: EventKind.Role, role: 'main' }],
         users: {},
         usersChanged: [],
         roles: {
@@ -220,7 +220,7 @@ describe(Reduce, () => {
         rolesChanged: ['main'],
         members: {}
       },
-      event: { date: '', kind: 'role', role: 'main', max: 0 }
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 0 }
     },
 
     {
@@ -234,10 +234,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'role', role: 'main', max: 10 },
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 10 },
       result: {
         date: '',
-        events: [{ date: '', kind: 'role', role: 'main', max: 10 }],
+        events: [{ date: '', kind: EventKind.Role, role: 'main', max: 10 }],
         users: {},
         usersChanged: [],
         roles: {
@@ -261,7 +261,7 @@ describe(Reduce, () => {
         rolesChanged: ['main'],
         members: {}
       },
-      event: { date: '', kind: 'role', role: 'main', max: 10 }
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 10 }
     },
 
     {
@@ -275,7 +275,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {}
       },
-      event: { date: '', kind: 'role', role: 'main', max: 0 }
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 0 }
     },
 
     {
@@ -289,10 +289,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example'] }
       },
-      event: { date: '', kind: 'role', role: 'main', max: 2 },
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 2 },
       result: {
         date: '',
-        events: [{ date: '', kind: 'role', role: 'main', max: 2 }],
+        events: [{ date: '', kind: EventKind.Role, role: 'main', max: 2 }],
         users: { example: 'data' },
         usersChanged: [],
         roles: {
@@ -316,10 +316,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example'] }
       },
-      event: { date: '', kind: 'role', role: 'main', max: 1 },
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 1 },
       result: {
         date: '',
-        events: [{ date: '', kind: 'role', role: 'main', max: 1 }],
+        events: [{ date: '', kind: EventKind.Role, role: 'main', max: 1 }],
         users: { example: 'data' },
         usersChanged: [],
         roles: {
@@ -343,7 +343,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example', 'example2'] }
       },
-      event: { date: '', kind: 'role', role: 'main', max: 1 }
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 1 }
     },
 
     {
@@ -357,7 +357,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example'] }
       },
-      event: { date: '', kind: 'role', role: 'main', max: 0 }
+      event: { date: '', kind: EventKind.Role, role: 'main', max: 0 }
     },
 
     /* TakeRoleEvent */
@@ -373,10 +373,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: [] }
       },
-      event: { date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
         date: '',
-        events: [{ date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        events: [{ date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1 },
@@ -396,10 +396,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: [], sub: ['example'] }
       },
-      event: { date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
         date: '',
-        events: [{ date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        events: [{ date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1, sub: 1 },
@@ -419,10 +419,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example2'] }
       },
-      event: { date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
         date: '',
-        events: [{ date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        events: [{ date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data', example2: 'data' },
         usersChanged: [],
         roles: { main: 2 },
@@ -442,7 +442,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example2'] }
       },
-      event: { date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
+      event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
 
     {
@@ -456,7 +456,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example'] }
       },
-      event: { date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
+      event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
 
     {
@@ -470,7 +470,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { }
       },
-      event: { date: '', kind: 'enter', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
+      event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
 
     /* LeaveRoleEvent */
@@ -486,10 +486,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example'] }
       },
-      event: { date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
         date: '',
-        events: [{ date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        events: [{ date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1 },
@@ -509,10 +509,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example'], sub: ['example'] }
       },
-      event: { date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
         date: '',
-        events: [{ date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        events: [{ date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1, sub: 1 },
@@ -532,10 +532,10 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example2', 'example'] }
       },
-      event: { date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
         date: '',
-        events: [{ date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        events: [{ date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data', example2: 'data' },
         usersChanged: [],
         roles: { main: 2 },
@@ -555,7 +555,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { main: ['example2'] }
       },
-      event: { date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
+      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
 
     {
@@ -569,7 +569,7 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: { }
       },
-      event: { date: '', kind: 'leave', role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
+      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     }
 
   ]

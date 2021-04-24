@@ -1,6 +1,6 @@
 import { Continuum } from './index'
 import { Instant } from './Instant'
-import { ModelEvent } from './ModelEvent'
+import { EventKind, ModelEvent } from './ModelEvent'
 import { Cloneable } from './utils'
 
 describe(Continuum, () => {
@@ -28,14 +28,14 @@ describe(Continuum, () => {
       {
         date: '',
 
-        kind: 'role',
+        kind: EventKind.Role,
         role: 'example'
       },
 
       {
         date: '',
 
-        kind: 'user',
+        kind: EventKind.SetUser,
         user: 'temp',
         data: true
       },
@@ -43,7 +43,7 @@ describe(Continuum, () => {
       {
         date: '',
 
-        kind: 'user',
+        kind: EventKind.SetUser,
         user: 'temp2',
         data: true
       },
@@ -51,7 +51,7 @@ describe(Continuum, () => {
       {
         date: '2020-01-01',
 
-        kind: 'enter',
+        kind: EventKind.EnterRole,
         role: 'example',
         user: 'temp',
 
@@ -64,7 +64,7 @@ describe(Continuum, () => {
       {
         date: '2020-01-02',
 
-        kind: 'leave',
+        kind: EventKind.LeaveRole,
         role: 'example',
         user: 'temp',
 
@@ -77,7 +77,7 @@ describe(Continuum, () => {
       {
         date: '2020-01-02',
 
-        kind: 'enter',
+        kind: EventKind.EnterRole,
         role: 'example',
         user: 'temp2',
 
@@ -90,7 +90,7 @@ describe(Continuum, () => {
       {
         date: '2020-01-02',
 
-        kind: 'deleteUser',
+        kind: EventKind.DeleteUser,
         user: 'temp'
       }
     ],
@@ -100,18 +100,18 @@ describe(Continuum, () => {
         events: [
           {
             date: '',
-            kind: 'role',
+            kind: EventKind.Role,
             role: 'example'
           },
           {
             date: '',
-            kind: 'user',
+            kind: EventKind.SetUser,
             user: 'temp',
             data: true
           },
           {
             date: '',
-            kind: 'user',
+            kind: EventKind.SetUser,
             user: 'temp2',
             data: true
           }
@@ -139,7 +139,7 @@ describe(Continuum, () => {
         events: [
           {
             date: '2020-01-01',
-            kind: 'enter',
+            kind: EventKind.EnterRole,
             role: 'example',
             user: 'temp',
             reason: {
@@ -168,7 +168,7 @@ describe(Continuum, () => {
         events: [
           {
             date: '2020-01-02',
-            kind: 'leave',
+            kind: EventKind.LeaveRole,
             role: 'example',
             user: 'temp',
             reason: {
@@ -178,12 +178,12 @@ describe(Continuum, () => {
           },
           {
             date: '2020-01-02',
-            kind: 'deleteUser',
+            kind: EventKind.DeleteUser,
             user: 'temp'
           },
           {
             date: '2020-01-02',
-            kind: 'enter',
+            kind: EventKind.EnterRole,
             role: 'example',
             user: 'temp2',
             reason: {

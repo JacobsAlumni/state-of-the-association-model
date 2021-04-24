@@ -2,54 +2,54 @@ import { Cloneable, compareStrings } from './utils'
 
 /** Any event supported by this package */
 export type ModelEvent<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> =
-    TakeRoleEvent<FormalReason> |
-    LeaveRoleEvent<FormalReason> |
+  InstantEvent<Description> |
 
-    InstantEvent<Description> |
+  RoleEvent |
 
-    UpdateRoleEvent |
+  SetUserEvent<User> |
+  DeleteUserEvent |
 
-    SetUserEvent<User> |
-    DeleteUserEvent
+  EnterRoleEvent<FormalReason> |
+  LeaveRoleEvent<FormalReason>
 
 /** A (formal) description to the current instant */
-export interface InstantEvent<Description extends Cloneable> extends ModelEventPrototype<'instant'> {
+export interface InstantEvent<Description extends Cloneable> extends ModelEventPrototype<EventKind.Instant> {
   description: Description
 }
 
 /** create or update user data */
-export interface SetUserEvent<User> extends ModelEventPrototype<'user'> {
+export interface SetUserEvent<User> extends ModelEventPrototype<EventKind.SetUser> {
   user: string
   data: User
 }
 
 /** delete a user along with their data */
-export interface DeleteUserEvent extends ModelEventPrototype<'deleteUser'> {
+export interface DeleteUserEvent extends ModelEventPrototype<EventKind.DeleteUser> {
   user: string
 }
 
 /** Create or Delete a Role in the board */
-export interface UpdateRoleEvent extends ModelEventPrototype<'role'> {
+export interface RoleEvent extends ModelEventPrototype<EventKind.Role> {
   role: string
   max?: number /* maximum number of occupants of this role, default 1, to delete set <= 0 */
 }
 
 /** Assign a user to a specific role */
-export interface TakeRoleEvent<FormalReason extends Cloneable> extends ModelEventPrototype<'enter'> {
+export interface EnterRoleEvent<FormalReason extends Cloneable> extends ModelEventPrototype<EventKind.EnterRole> {
   role: string
   user: string
   reason: Reason<FormalReason>
 }
 
 /** Unassign a user from a specific role */
-export interface LeaveRoleEvent<FormalReason extends Cloneable> extends ModelEventPrototype<'leave'> {
+export interface LeaveRoleEvent<FormalReason extends Cloneable> extends ModelEventPrototype<EventKind.LeaveRole> {
   role: string
   user: string
   reason: Reason<FormalReason>
 }
 
 /** Base used for every kind of event */
-interface ModelEventPrototype<Kind extends Readonly<string>> {
+interface ModelEventPrototype<Kind extends EventKind> {
   kind: Kind
   date: DateDate
 }
@@ -82,17 +82,30 @@ interface ReasonPrototype<K extends string, Description> {
   description: Description
 }
 
-const eventKindOrder: Array<ModelEvent<never, never, never>['kind']> = [
-  'instant', // description of the current event, so that error messages are right
+/** Represents the Kinds of Events used by this package */
+export enum EventKind {
+  Instant = 'instant',
 
-  'leave', // members leave first, so that they can 'move' to a different position
-  'deleteUser', // remove users
+  Role = 'role',
 
-  'role', // update / remove role
+  EnterRole = 'enter',
+  LeaveRole = 'leave',
 
-  'user', // update / remove user data
-  'enter' // member was elected or appointed
+  SetUser = 'user',
+  DeleteUser = 'deleteUser',
 
+}
+
+const eventKindOrder: EventKind[] = [
+  EventKind.Instant, // description of the current event, so that error messages are right
+
+  EventKind.LeaveRole, // members leave first, so that they can 'move' to a different position
+  EventKind.DeleteUser, // remove users
+
+  EventKind.Role, // update / remove role
+
+  EventKind.SetUser, // update / remove user data
+  EventKind.EnterRole // member was elected or appointed
 ]
 
 /* DateDate represents a time represented by a "YYYY-MM-DD" string. The empty DateDate represents a time before all others. */
