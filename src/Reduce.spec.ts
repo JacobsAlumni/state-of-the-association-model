@@ -21,7 +21,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Instant, description: 'description' },
       result: {
@@ -32,7 +33,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       }
     },
     {
@@ -45,7 +47,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Instant, description: 'description' }
     },
@@ -60,7 +63,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' },
       result: {
@@ -72,7 +76,8 @@ describe(Reduce, () => {
         usersChanged: ['example'],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: { example: [] }
       }
     },
     {
@@ -84,7 +89,8 @@ describe(Reduce, () => {
         usersChanged: ['example'],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' }
     },
@@ -97,7 +103,10 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {
+          example: []
+        }
       },
       event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' },
       result: {
@@ -109,7 +118,10 @@ describe(Reduce, () => {
         usersChanged: ['example'],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {
+          example: []
+        }
       }
     },
     {
@@ -121,7 +133,10 @@ describe(Reduce, () => {
         usersChanged: ['example'],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {
+          example: []
+        }
       },
       event: { date: '', kind: EventKind.SetUser, user: 'example', data: 'data' }
     },
@@ -136,7 +151,10 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {
+          example: []
+        }
       },
       event: { date: '', kind: EventKind.DeleteUser, user: 'example' },
       result: {
@@ -146,7 +164,8 @@ describe(Reduce, () => {
         usersChanged: ['example'],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       }
     },
 
@@ -159,7 +178,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: { example: [] }
       },
       event: { date: '', kind: EventKind.DeleteUser, user: 'example2' }
     },
@@ -175,6 +195,12 @@ describe(Reduce, () => {
         rolesChanged: [],
         members: {
           main: ['example']
+        },
+        historicRecords: {
+          examples: [{
+            role: 'main',
+            from: ''
+          }]
         }
       },
       event: { date: '', kind: EventKind.DeleteUser, user: 'example' }
@@ -191,7 +217,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Role, role: 'main' },
       result: {
@@ -205,7 +232,8 @@ describe(Reduce, () => {
         rolesChanged: ['main'],
         members: {
           main: []
-        }
+        },
+        historicRecords: {}
       }
     },
 
@@ -218,7 +246,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: ['main'],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 0 }
     },
@@ -232,7 +261,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 10 },
       result: {
@@ -246,7 +276,8 @@ describe(Reduce, () => {
         rolesChanged: ['main'],
         members: {
           main: []
-        }
+        },
+        historicRecords: {}
       }
     },
 
@@ -259,7 +290,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: ['main'],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 10 }
     },
@@ -273,7 +305,8 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: {},
         rolesChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 0 }
     },
@@ -287,7 +320,12 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: ['example'] }
+        members: { main: ['example'] },
+        historicRecords: {
+          example: [
+            { role: 'main', from: '' }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 2 },
       result: {
@@ -301,6 +339,11 @@ describe(Reduce, () => {
         rolesChanged: ['main'],
         members: {
           main: ['example']
+        },
+        historicRecords: {
+          example: [
+            { role: 'main', from: '' }
+          ]
         }
       }
     },
@@ -314,7 +357,12 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example'] }
+        members: { main: ['example'] },
+        historicRecords: {
+          example: [
+            { role: 'main', from: '' }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 1 },
       result: {
@@ -328,6 +376,11 @@ describe(Reduce, () => {
         rolesChanged: ['main'],
         members: {
           main: ['example']
+        },
+        historicRecords: {
+          example: [
+            { role: 'main', from: '' }
+          ]
         }
       }
     },
@@ -341,7 +394,15 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example', 'example2'] }
+        members: { main: ['example', 'example2'] },
+        historicRecords: {
+          example: [
+            { role: 'main', from: '' }
+          ],
+          example2: [
+            { role: 'main', from: '' }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 1 }
     },
@@ -355,7 +416,12 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: ['example'] }
+        members: { main: ['example'] },
+        historicRecords: {
+          example: [
+            { role: 'main', from: '' }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.Role, role: 'main', max: 0 }
     },
@@ -371,7 +437,10 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: [] }
+        members: { main: [] },
+        historicRecords: {
+          example: []
+        }
       },
       event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
@@ -381,7 +450,15 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: ['example'] }
+        members: { main: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       }
     },
 
@@ -394,7 +471,15 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1, sub: 1 },
         rolesChanged: [],
-        members: { main: [], sub: ['example'] }
+        members: { main: [], sub: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'sub',
+              from: ''
+            }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
@@ -404,7 +489,19 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1, sub: 1 },
         rolesChanged: [],
-        members: { main: ['example'], sub: ['example'] }
+        members: { main: ['example'], sub: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'sub',
+              from: ''
+            },
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       }
     },
 
@@ -417,7 +514,16 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example2'] }
+        members: { main: ['example2'] },
+        historicRecords: {
+          example: [],
+          example2: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
@@ -427,7 +533,21 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example2', 'example'] }
+        members: { main: ['example2', 'example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ],
+          example2: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       }
     },
 
@@ -440,7 +560,16 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: ['example2'] }
+        members: { main: ['example2'] },
+        historicRecords: {
+          example: [],
+          example2: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
@@ -454,7 +583,15 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example'] }
+        members: { main: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
@@ -468,7 +605,10 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { },
         rolesChanged: [],
-        members: { }
+        members: { },
+        historicRecords: {
+          example: []
+        }
       },
       event: { date: '', kind: EventKind.EnterRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
@@ -478,69 +618,140 @@ describe(Reduce, () => {
     {
       name: 'can leave a role',
       instant: {
-        date: '',
+        date: '2000-10-10',
         events: [],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: ['example'] }
+        members: { main: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       },
-      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '2000-10-10', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
-        date: '',
-        events: [{ date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        date: '2000-10-10',
+        events: [{ date: '2000-10-10', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1 },
         rolesChanged: [],
-        members: { main: [] }
+        members: { main: [] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: '',
+              until: '2000-10-10'
+            }
+          ]
+        }
       }
     },
 
     {
       name: 'can leave a role staying in another',
       instant: {
-        date: '',
+        date: '2000-10-10',
         events: [],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1, sub: 1 },
         rolesChanged: [],
-        members: { main: ['example'], sub: ['example'] }
+        members: { main: ['example'], sub: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: ''
+            },
+            {
+              role: 'sub',
+              from: ''
+            }
+          ]
+        }
       },
-      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '2000-10-10', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
-        date: '',
-        events: [{ date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        date: '2000-10-10',
+        events: [{ date: '2000-10-10', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data' },
         usersChanged: [],
         roles: { main: 1, sub: 1 },
         rolesChanged: [],
-        members: { main: [], sub: ['example'] }
+        members: { main: [], sub: ['example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: '',
+              until: '2000-10-10'
+            },
+            {
+              role: 'sub',
+              from: ''
+            }
+          ]
+        }
       }
     },
 
     {
       name: 'can leave a role leaving another member',
       instant: {
-        date: '',
+        date: '2000-10-10',
         events: [],
         users: { example: 'data', example2: 'data' },
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example2', 'example'] }
+        members: { main: ['example2', 'example'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ],
+          example2: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       },
-      event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
+      event: { date: '2000-10-10', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } },
       result: {
-        date: '',
-        events: [{ date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
+        date: '2000-10-10',
+        events: [{ date: '2000-10-10', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }],
         users: { example: 'data', example2: 'data' },
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example2'] }
+        members: { main: ['example2'] },
+        historicRecords: {
+          example: [
+            {
+              role: 'main',
+              from: '',
+              until: '2000-10-10'
+            }
+          ],
+          example2: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       }
     },
 
@@ -553,7 +764,16 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { main: 2 },
         rolesChanged: [],
-        members: { main: ['example2'] }
+        members: { main: ['example2'] },
+        historicRecords: {
+          example: [],
+          example2: [
+            {
+              role: 'main',
+              from: ''
+            }
+          ]
+        }
       },
       event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     },
@@ -567,11 +787,13 @@ describe(Reduce, () => {
         usersChanged: [],
         roles: { },
         rolesChanged: [],
-        members: { }
+        members: { },
+        historicRecords: {
+          example: []
+        }
       },
       event: { date: '', kind: EventKind.LeaveRole, role: 'main', user: 'example', reason: { kind: 'legal', description: 'none' } }
     }
-
   ]
 
   tests.forEach(({ name, instant, event, result }) => {

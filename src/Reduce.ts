@@ -87,6 +87,10 @@ const eventReducers: { [Kind in EventKind]: EventReducer<any, any, any, Kind>} =
 
     instant.usersChanged.push(user)
     instant.users[user] = data
+
+    if (!Object.prototype.hasOwnProperty.call(instant.historicRecords, user)) {
+      instant.historicRecords[user] = []
+    }
   },
 
   [EventKind.DeleteUser]: <
@@ -113,6 +117,9 @@ const eventReducers: { [Kind in EventKind]: EventReducer<any, any, any, Kind>} =
 
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete instant.users[user]
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete instant.historicRecords[user]
+
     instant.usersChanged.push(user)
   },
 
@@ -147,11 +154,24 @@ const eventReducers: { [Kind in EventKind]: EventReducer<any, any, any, Kind>} =
 
     // check that we have enough space!
     if (current.length > max) {
-      throw new ReduceError(instant, event, 'Cannot enter role ' + JSON.stringify(role) + ': Not enough space in role. ')
+      throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' cannot enter role ' + JSON.stringify(role) + ': Not enough space in role. ')
     }
 
     // and store it again!
     instant.members[role] = current
+
+    // get the records for the current user
+    const records = instant.historicRecords[user]
+    const pastRecord = records.find(({ from, role: recordRole }) => from === instant.date && recordRole === role)
+    if (pastRecord !== undefined) {
+      throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' cannot enter role ' + JSON.stringify(role) + ': Records for user already contain role. ')
+    }
+
+    // store in the record that we added the current user
+    records.push({
+      role,
+      from: instant.date
+    })
   },
 
   [EventKind.LeaveRole]: <
@@ -179,12 +199,20 @@ const eventReducers: { [Kind in EventKind]: EventReducer<any, any, any, Kind>} =
     const current = instant.members[role] ?? []
     const index = current.indexOf(user)
     if (index < 0) {
-      throw new ReduceError(instant, event, 'User ' + JSON.stringify(role) + ' cannot leave role ' + JSON.stringify(role) + ': Role not occupied by user. ')
+      throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' cannot leave role ' + JSON.stringify(role) + ': Role not occupied by user. ')
     }
 
+    // remove that index and write it back
     current.splice(index, 1)
-
     instant.members[role] = current
+
+    // complete the records for the provided user
+    const records = instant.historicRecords[user]
+    const pastRecord = records.find(({ until, role: recordRole }) => recordRole === role && until === undefined)
+    if (pastRecord === undefined) {
+      throw new ReduceError(instant, event, 'User ' + JSON.stringify(user) + ' cannot leave role ' + JSON.stringify(role) + ': Records for user missing starting time. ')
+    }
+    pastRecord.until = instant.date
   }
 }
 

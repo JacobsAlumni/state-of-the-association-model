@@ -18,6 +18,9 @@ export interface Instant<Description extends Cloneable, User extends Cloneable, 
   rolesChanged: string[] /* roles that have been changed in this instant */
 
   members: { [key: string]: string[] } /* assignment of roles -> persons */
+
+  /** historic data about members */
+  historicRecords: { [user: string]: Array<{role: string, from: string, until?: string}> }
 }
 
 /**
@@ -27,7 +30,7 @@ export interface Instant<Description extends Cloneable, User extends Cloneable, 
  * @returns a new instant, that potentially inherits from the old one
  */
 export function NewInstant<Description extends Cloneable, User extends Cloneable, FormalReason extends Cloneable> (date: DateDate, initial?: Instant<Description, User, FormalReason>): Instant<Description, User, FormalReason> {
-  const { roles, members, users } = initial ?? { roles: {}, members: {}, users: {} }
+  const { roles, members, users, historicRecords: historicMembers } = initial ?? { roles: {}, members: {}, users: {}, historicRecords: {} }
 
   return {
     date,
@@ -39,6 +42,7 @@ export function NewInstant<Description extends Cloneable, User extends Cloneable
     users: deepClone(users),
     usersChanged: [],
 
-    members: deepClone(members)
+    members: deepClone(members),
+    historicRecords: deepClone(historicMembers)
   }
 }

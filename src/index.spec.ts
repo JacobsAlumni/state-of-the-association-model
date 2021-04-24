@@ -19,7 +19,8 @@ describe(Continuum, () => {
         rolesChanged: [],
         users: {},
         usersChanged: [],
-        members: {}
+        members: {},
+        historicRecords: {}
       }
     ]
   }, {
@@ -132,6 +133,10 @@ describe(Continuum, () => {
         ],
         members: {
           example: []
+        },
+        historicRecords: {
+          temp: [],
+          temp2: []
         }
       },
       {
@@ -161,6 +166,15 @@ describe(Continuum, () => {
           example: [
             'temp'
           ]
+        },
+        historicRecords: {
+          temp: [
+            {
+              role: 'example',
+              from: '2020-01-01'
+            }
+          ],
+          temp2: []
         }
       },
       {
@@ -205,6 +219,14 @@ describe(Continuum, () => {
         members: {
           example: [
             'temp2'
+          ]
+        },
+        historicRecords: {
+          temp2: [
+            {
+              role: 'example',
+              from: '2020-01-02'
+            }
           ]
         }
       }

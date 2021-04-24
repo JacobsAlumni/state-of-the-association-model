@@ -7,6 +7,7 @@ describe(NewInstant, () => {
       date: '',
       events: [],
       members: {},
+      historicRecords: {},
       roles: {},
       rolesChanged: [],
       users: {},
@@ -19,6 +20,7 @@ describe(NewInstant, () => {
       date: '2020-01-01',
       events: [],
       members: {},
+      historicRecords: {},
       roles: {},
       rolesChanged: [],
       users: {},
@@ -32,14 +34,21 @@ describe(NewInstant, () => {
       description: 'description',
       events: [{ kind: EventKind.Instant, date: '2000-10-10', description: 'description' }],
       members: { main: ['example'] },
+      historicRecords: {
+        main: []
+      },
       roles: { main: 1 },
       rolesChanged: [],
       users: { example: 'data' },
       usersChanged: []
+
     })).toStrictEqual({
       date: '2020-01-01',
       events: [],
       members: { main: ['example'] },
+      historicRecords: {
+        main: []
+      },
       roles: { main: 1 },
       rolesChanged: [],
       users: { example: 'data' },
